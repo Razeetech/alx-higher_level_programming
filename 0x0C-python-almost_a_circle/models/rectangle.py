@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-"""Defines a rectangle class."""
+"""
+Defines a rectangle class
+"""
+
 from models.base import Base
 
 
@@ -140,7 +143,7 @@ class Rectangle(Base):
                     self.y = v
 
     def to_dictionary(self):
-        """Return dictionary representation of a Rectangle."""
+        """Return the dictionary representation of a Rectangle."""
         return {
             "id": self.id,
             "width": self.width,
@@ -153,4 +156,4 @@ class Rectangle(Base):
         """Return the print() and str() representation of the Rectangle."""
         return "[Rectangle] ({}) {}/{} - {}/{}".format(self.id,
                                                        self.x, self.y,
-                                                       self.width, self.height)i
+                                                       self.width, self.height)
