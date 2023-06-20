@@ -1,23 +1,30 @@
 #!/usr/bin/python3
-"""Lists states"""
-
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
-
-Base = declarative_base()
+"""Module that improves the model_state.py file"""
 
 
-class State(Base):
-    """Class representing the states table"""
+import sqlalchemy
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
+
+
+Base = sqlalchemy.ext.declarative.declarative_base()
+
+
+class State (Base):
+    """A U.S. state stored in a database
+
+    Attributes:
+        cities (List[City]): list of cities in this state
+        id (int): a unique ID for this record
+        name (str): name of the state
+
+    """
+
     __tablename__ = 'states'
-
-    id = Column(Integer, nullable=False, primary_key=True,
-                autoincrement=True, unique=True)
-    name = Column(String(128), nullable=False)
-
-    cities = relationship(
-        "City",
-        cascade="all, delete-orphan",
-        backref=backref("state", cascade="all"),
-        single_parent=True)
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    name = sqlalchemy.Column(sqlalchemy.String(256), nullable=False)
+    cities = sqlalchemy.orm.relationship(
+        'City',
+        backref='state',
+        cascade='all, delete-orphan'
+    )

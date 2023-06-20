@@ -1,13 +1,30 @@
 #!/usr/bin/python3
-"""Start link class to table in database
-"""
-from sys import argv
-from model_state import Base, State
-from sqlalchemy import (create_engine)
+"""Module for State class"""
 
-if __name__ == "__main__":
-    engine = create_engine(
-        'mysql+mysqldb://{}:{}@localhost/{}'
-        .format(argv[1], argv[2],
-                argv[3]), pool_pre_ping=True)
-    Base.metadata.create_all(engine)
+
+import sqlalchemy
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
+
+
+Base = sqlalchemy.ext.declarative.declarative_base()
+
+
+class State (Base):
+    """A U.S. state stored in a database
+
+    Attributes:
+        cities (List[City]): list of cities in this state
+        id (int): a unique ID for this record
+        name (str): name of the state
+
+    """
+
+    __tablename__ = 'states'
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    name = sqlalchemy.Column(sqlalchemy.String(256), nullable=False)
+    cities = sqlalchemy.orm.relationship(
+        'City',
+        back_populates='state',
+        cascade='delete'
+    )

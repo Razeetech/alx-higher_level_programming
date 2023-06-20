@@ -1,17 +1,28 @@
 #!/usr/bin/python3
-"""Lists states"""
-
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+"""Module that contains the class definition of a 'City'"""
 
 
-class City(Base):
-    """Class representing the states table"""
+from model_state import Base, State
+import sqlalchemy
+import sqlalchemy.orm
+
+
+class City (Base):
+    """A U.S. city stored in a database
+
+    Attributes:
+        id (int): a unique ID for this record
+        name (str): name of the state
+        state (State): state this city is in
+        state_id (int): the ID of the state in which this state resides
+
+    """
+
     __tablename__ = 'cities'
-
-    id = Column(Integer, nullable=False, primary_key=True,
-                autoincrement=True, unique=True)
-    name = Column(String(128), nullable=False)
-    state_id = Column(Integer, ForeignKey("states.id"), nullable=False)
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    name = sqlalchemy.Column(sqlalchemy.String(256), nullable=False)
+    state_id = sqlalchemy.Column(
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey('states.id')
+    )
+    state = sqlalchemy.orm.relationship('State', back_populates='cities')

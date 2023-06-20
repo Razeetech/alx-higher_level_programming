@@ -1,22 +1,32 @@
 #!/usr/bin/python3
-"""List all states"""
-from sys import argv
-from model_state import Base, State
-from sqlalchemy import (create_engine)
-from sqlalchemy.orm import sessionmaker
+"""script that prints the 'State' object with the 'name' passed as argument from the database"""
 
-if __name__ == "__main__":
-    engine = create_engine(
-        'mysql+mysqldb://{}:{}@localhost/{}'
-        .format(argv[1], argv[2],
-                argv[3]), pool_pre_ping=True)
+
+from model_state import Base, State
+import sqlalchemy
+import sqlalchemy.orm
+import sys
+
+
+def main():
+    """List the names and IDs of U.S. states in a database"""
+
+    if len(sys.argv) < 5:
+        sys.exit(1)
+    engine = sqlalchemy.create_engine('mysql://{}:{}@localhost/{}'.format(
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3]
+    ))
     Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
+    Session = sqlalchemy.orm.sessionmaker(bind=engine)
     session = Session()
-    states = session.query(State).\
-        filter(State.name == argv[4]).order_by(State.id).all()
-    if states:
-        print("{}".format(states[0].id))
+    record = session.query(State).filter(State.name == sys.argv[4]).first()
+    if record is None:
+        print('Not found')
     else:
-        print("Not found")
-    session.close()
+        print(record.id)
+
+
+if __name__ == '__main__':
+    main()
